@@ -24,7 +24,25 @@ function StageAssistant() {
 StageAssistant.prototype.setup = function() {
 //Initiate database
     var that = this;
-    persistence.connect("charslib", "Chinese Charactor Lib", 800 * 1024);
+    this.db = openDatabase("charslib", 1, "Chinese Charactor Lib", 800 * 1024);
+    this.db.transaction( (function (tx) {
+    	tx.executeSql('select * from charlib;', [], function(){},
+    		function(tx, result){
+    			tx.executeSql("create table charlib (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, gr text, latin text, ch text, py text)",[],
+    					function(tx, result){
+    						var chinese ={};
+    						for (chinese in charslib) {
+    							tx.executeSql("insert into charlib (gr, latin, ch, py) values (?,?,?,?)", [player.name, player.position, player.number.toFixed(0)])
+    							chinese.gr;
+    							t.latin = chinese.latin;
+    							t.ch = chinese.ch;
+    							t.py = chinese.py;
+    							persistence.add(t);
+        	        }
+    					
+    			})
+    	}).bind(this);
+    
     Char = persistence.define("Charlib", {
     	gr: "TEXT",
     	latin: "TEXT",
