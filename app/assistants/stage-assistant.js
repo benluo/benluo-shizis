@@ -24,50 +24,22 @@ function StageAssistant() {
 StageAssistant.prototype.setup = function() {
 //Initiate database
     var that = this;
-    this.db = openDatabase("charslib", 1, "Chinese Charactor Lib", 800 * 1024);
-    this.db.transaction( (function (tx) {
-    	tx.executeSql('select * from charlib;', [], function(){},
-    		function(tx, result){
-    			tx.executeSql("create table charlib (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, gr text, latin text, ch text, py text)",[],
-    					function(tx, result){
-    						var chinese ={};
-    						for (chinese in charslib) {
-    							tx.executeSql("insert into charlib (gr, latin, ch, py) values (?,?,?,?)", [player.name, player.position, player.number.toFixed(0)])
-    							chinese.gr;
-    							t.latin = chinese.latin;
-    							t.ch = chinese.ch;
-    							t.py = chinese.py;
-    							persistence.add(t);
-        	        }
-    					
-    			})
-    	}).bind(this);
-    
-    Char = persistence.define("Charlib", {
-    	gr: "TEXT",
-    	latin: "TEXT",
-    	ch: "TEXT",
-    	py: "TEXT"
-    });
-    var chars = [];
-    persistence.schemaSync(function(tx){
-	//check if the database is exist, if so, skip inserting json file to database;
-    	Char.all().list(tx, function(results){
-    	    if (results.length == 0){
-    		var chinese ={};
-    	        for (var i=0 ; i< charslib.length; i++) {
-    		    chinese = charslib[i];
-    		    var t = new Char();
-    		    t.gr = chinese.gr;
-    		    t.latin = chinese.latin;
-    		    t.ch = chinese.ch;
-    		    t.py = chinese.py;
-    		    persistence.add(t);
-    	        }
+    Shizi.Cookies.initialize();
+    if (! Shizi.context){
+	this.db = openDatabase("charslib", 1, "Chinese Charactor Lib", 800 * 1024);
+	this.db.transaction( (function (tx) {
+            tx.executeSql("create table charlib (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, gr text, latin text, ch text, py text, selected boolean, ltimes integer, known boolean)",[], function (){}, function () {});
+	}));
+	this.db.transaction( (function (tx) {
+    	    var chinese ={};
+    	    for (chinese in charslib) {
+    		tx.executeSql("insert into charlib (gr, latin, ch, py) values (?,?,?,?)", chinese.gr, chinese.latin, chinese.ch, chinese.py)
     	    }
-    	});
-    	persistence.flush();
-    });
+    	}));
+	Shizi.Cookies.context = {db: true};
+    }
+//Initiate database end
+    
 
     Char.all().filter("gr","=","1a").order("latin", false).list(null, function (results) {
     	results.forEach(function (r){
