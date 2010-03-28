@@ -16,5 +16,9 @@ Shizi.Cookies = ({
     	this.cookieData.put({
     		context: Shizi.context,
     	});
+    },
+
+    deleteCookie: function(){
+	this.cookieData.remove("context");
     }
 })

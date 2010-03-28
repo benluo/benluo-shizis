@@ -25,6 +25,7 @@ StageAssistant.prototype.setup = function() {
 //Initiate database
     var that = this;
     Shizi.Cookies.initialize();
+    Shizi.Cookies.deleteCookie();
     if (! Shizi.context){
 	this.db = openDatabase("charslib", 1, "Chinese Charactor Lib", 800 * 1024);
 	this.db.transaction( (function (tx) {
@@ -39,15 +40,8 @@ StageAssistant.prototype.setup = function() {
 	Shizi.Cookies.context = {db: true};
     }
 //Initiate database end
-    
 
-    Char.all().filter("gr","=","1a").order("latin", false).list(null, function (results) {
-    	results.forEach(function (r){
-    	    chars.push(r);
-	});
-	that.controller.pushScene("showChar",chars);
-    });
-
+	that.controller.pushScene("showChar",charslib);
 
 //    Mojo.Log.error("Shizi.context.chars outter length is ", typeof chars);
   
